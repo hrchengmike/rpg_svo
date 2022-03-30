@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<launch>
+
+   <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
+
+        <!-- Camera topic to subscribe to -->
+        <param name="cam_topic" value="/camera/image_raw" type="str" />
+
+        <!-- Camera calibration file -->
+        <rosparam file="$(find svo_ros)/param/camera_pinhole_480p_updated.yaml" />
+
+        <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
+
+        <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+        <!-- Initial camera orientation, make it point downwards -->
+        <param name="init_rx" value="3.14" />
+        <param name="init_ry" value="0.00" />
+        <param name="init_rz" value="0.00" />
+   </node>
+
+   
+   <node pkg="rqt_svo" type="rqt_svo" name="rqt_svo" />
+   
+   <node pkg="rviz" type="rviz" name="odometry_rviz" args="-d $(find svo_ros)/rviz_config.rviz"/>
+
+    <!-- full path to the video file -->
+   <include file="$(find video_stream_opencv)/launch/camera.launch" >
+          <arg name="video_stream_provider" value="/home/hrcheng/winter_2022/svo/catkin_ws/data/test_video_70fps_2.mpg"/>
+          <!-- throttling the querying of frames to -->
+          <arg name="fps" value="70" />
+          <!-- start frame of video 330~370(390)-->  
+          <arg name="start_frame" default="0"/>
+          <!-- stop frame of video, -1 means the end of video -->
+          <arg name="stop_frame" default="-1"/>
+   </include>
+   
+</launch>
