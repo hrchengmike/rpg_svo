@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+
+   <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
+
+        <!-- Camera topic to subscribe to -->
+        <param name="cam_topic" value="/camera/image_raw" type="str" />
+
+        <!-- Camera calibration file -->
+        <rosparam file="$(find svo_ros)/param/camera_atan_perturbed.yaml" />
+
+        <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
+
+        <rosparam file="$(find svo_ros)/param/vo_accurate.yaml" />
+        <!-- Initial camera orientation, make it point downwards -->
+        <param name="init_rx" value="3.14" />
+        <param name="init_ry" value="0.00" />
+        <param name="init_rz" value="0.00" />
+   </node>
+
+   <node pkg="rqt_svo" type="rqt_svo" name="rqt_svo" />
+
+   <node pkg="rviz" type="rviz" name="odometry_rviz" args="-d $(find svo_ros)/rviz_config.rviz"/>
+
+   <node pkg="rosbag" type="play" name="player"  args="/home/hrcheng/winter_2022/svo/catkin_ws/data/airground_rig_s3_2013-03-18_21-38-48.bag"/>
+</launch>
